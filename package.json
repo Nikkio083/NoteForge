@@ -11,8 +11,17 @@
     "type-check": "vue-tsc --build"
   },
   "dependencies": {
+    "@fortawesome/fontawesome-free": "^6.7.2",
+    "@heroicons/vue": "^2.2.0",
+    "@supabase/supabase-js": "^2.49.4",
+    "firebase": "^11.6.0",
+    "pdfjs-dist": "^5.2.133",
     "pinia": "^3.0.1",
-    "vue": "^3.5.13"
+    "vue": "^3.5.13",
+    "vue-pdf": "^4.3.0",
+    "vue-pdf-embed": "^2.1.2",
+    "vue-router": "^4.5.0",
+    "vue3-pdf-app": "^1.0.3"
   },
   "devDependencies": {
     "@tsconfig/node22": "^22.0.0",
