@@ -2,6 +2,7 @@ import { defineStore } from 'pinia';
 import { supabase } from '@/supabase';
 import { useAuthStore } from '@/stores/authStore';
 import {ref} from "vue";
+import router from "@/routers/index.ts";
 
 export const useFileStore = defineStore('fileStore', {
     state: () => ({
@@ -11,6 +12,7 @@ export const useFileStore = defineStore('fileStore', {
         metadata: {} as Record<string, any>,
         currentFile: Object as any,
         risultati: [] as Array<any>,
+        pic: '' as string,
     }),
 
     actions: {
@@ -39,6 +41,11 @@ export const useFileStore = defineStore('fileStore', {
                 throw new Error('Impossibile ottenere l’URL pubblico');
             }
 
+            if(user.user_metadata.profilePic.publicUrl === null) {
+                this.pic = ""
+            }else{
+                this.pic = user.user_metadata.profilePic.publicUrl
+            }
 
             const { error: dbError } = await supabase.from('noteforge').insert([
                 {
@@ -50,7 +57,7 @@ export const useFileStore = defineStore('fileStore', {
                     filePath: filePath,
                     author: user.user_metadata.name,
                     preview: preview,
-                    authorPic: user.user_metadata.profilePic.publicUrl,
+                    authorPic: this.pic,
                 },
             ]);
 
@@ -82,6 +89,30 @@ export const useFileStore = defineStore('fileStore', {
                         i--;
                     }
                 }
+                await router.push('/ris');
+            }
+        },
+        async searchFileByTag(tag: string, id: string) {
+            const { data, error } = await supabase
+                .from('noteforge')
+                .select('*')
+                .contains('tags', [tag]);
+
+
+
+
+
+            if (error) {
+                console.error('Errore durante la ricerca:', error)
+            } else {
+                const result = ref(data);
+                for(let i = 0; i < result.value.length; i++) {
+                    if(result.value[i].id === id) {
+                        result.value.splice(i, 1);
+                        i--;
+                    }
+                }
+                return result.value;
             }
         },
         async addComment(comment: string, file: any) {
@@ -144,6 +175,22 @@ export const useFileStore = defineStore('fileStore', {
                     console.error('Errore durante il download:', error);
                 }
             }
+        },
+        async addView(file: any) {
+            file.views++;
+            const { error } = await supabase
+                .from('noteforge')
+                .update({ views: file.views })
+                .eq('id', file.id.trim())
+                .select('*');
+        },
+        async addDownload(file: any) {
+            file.downloads++;
+            const { error } = await supabase
+                .from('noteforge')
+                .update({ downloads: file.downloads })
+                .eq('id', file.id.trim())
+                .select('*');
         }
     },
 });

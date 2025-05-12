@@ -30,8 +30,8 @@ export default {
     }
 
     const registra = async () => {
-      await authStore.registra(email.value, password.value, name.value, school.value, );
-      fileUrl.value = await (fileStore.uploadFile(file.value, `${email.value}/profilePic`, "", ["profilePic"]));
+      await authStore.registra(email.value, password.value, name.value, school.value, "");
+      fileUrl.value = await (fileStore.uploadFile(file.value, `${email.value}/profilePic`, "", ["profilePic"], ""));
       console.log(fileUrl.value);
       await authStore.updateUser(fileUrl.value);
       alert("Registrazione effettuata con successo!");

@@ -1,35 +1,39 @@
 <script setup lang="ts">
 import NavbarHome from "../components/NavBarHome.vue";
 import foo from "../components/footer.vue";
+import amicone from "@/assets/imgs/profiloamicone.jpeg";
+import amr from "@/assets/imgs/Amr.png";
+import nour from "@/assets/imgs/Nour.png";
+import musta from "@/assets/imgs/Musta.jpeg";
 
 const creators = [
   {
-    name: "Amicone",
-    surname: "Nicola",
+    name: "Nicola",
+    surname: "Amicone",
     potere: "Fullstack Developer",
-    img: "https://i.pravatar.cc/150?img=1",
-    link: "https://github.com/marcorossi",
+    img: amicone,
+    link: "https://github.com/Nikkio083",
   },
   {
     name: "Amro",
     surname: "Awadein",
     potere: "Fullstack Developer",
-    img: "https://i.pravatar.cc/150?img=2",
-    link: "https://linkedin.com/in/lucabianchi",
+    img: amr,
+    link: "https://github.com/Amro-ALMasry",
   },
   {
-    name: "Bensalem",
-    surname: "Nour",
+    name: "Nour",
+    surname: "Ben Salem",
     potere: "Fullstack Developer",
-    img: "https://i.pravatar.cc/150?img=3",
-    link: "https://github.com/giuliaverdi",
+    img: nour,
+    link: "https://github.com/nour9407",
   },
   {
-    name: "Abde",
-    surname: "Mustafa",
+    name: "Mustafa",
+    surname: "Abdellatif",
     potere: "Fullstack Developer",
-    img: "https://i.pravatar.cc/150?img=4",
-    link: "https://linkedin.com/in/saraneri",
+    img: musta,
+    link: "https://github.com/moustafa21812",
   },
 ];
 </script>

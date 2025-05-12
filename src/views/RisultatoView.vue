@@ -38,7 +38,7 @@
                         <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z" />
                         <circle cx="12" cy="12" r="3" />
                       </svg>
-                      128
+                      {{c.views || 0}}
                     </span>
                     <span class="downloads">
                       <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon">
@@ -46,7 +46,7 @@
                         <path d="m6 11 6 6 6-6" />
                         <path d="M19 21H5" />
                       </svg>
-                      45
+                      {{c.downloads || 0}}
                     </span>
                   </div>
                 </div>
@@ -69,7 +69,7 @@
               </svg>
               <span></span>
             </button>
-            <button @click="fileStore.downloadfile(c.link, c.title)" class="action-button save-btn" >
+            <button @click="download(c.link, c.title, c)" class="action-button save-btn" >
               <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon">
               <path d="M12 17V3" />
               <path d="m6 11 6 6 6-6" />
@@ -110,6 +110,7 @@ const dislikedItems = ref({});
 
 const setCurrentFile = (file) => {
   fileStore.setCurrentFile(file);
+  fileStore.addView(file);
   router.push('/visualizza');
 };
 
@@ -147,6 +148,12 @@ const isLiked = (index) => {
 const isDisliked = (index) => {
   return dislikedItems.value[index] || false;
 };
+
+const download =  (url, name, file) => {
+  fileStore.addDownload(file);
+  console.log(file);
+  fileStore.downloadfile(url, name);
+}
 
 onMounted(fetchResults);
 </script>

@@ -11,10 +11,13 @@
         />
       </div>
 
-      <!-- Sidebar con informazioni -->
-      <div class="sidebar-wrapper">
-        <FileSideBar :file="file" />
-      </div>
+
+      <Suspense>
+        <!-- Sidebar con informazioni -->
+        <div class="sidebar-wrapper">
+          <FileSideBar :file="file" />
+        </div>
+      </Suspense>
     </div>
   </div>
 </template>
