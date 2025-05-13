@@ -9,20 +9,27 @@ import RisultatoView from "@/views/RisultatoView.vue";
 import CaricaFile from "@/views/CaricaFile.vue";
 
 const routes = [
-    {path: "/login", name:"login", component: LoginView},
-    {path: "/chisiamo", name:"chisiamo", component: ChiSiamoView},
-    {path: "/home", name:"home", component: HomeView},
-    {path: "/registra", name:"registra", component: RegistraView},
-    {path: "/ris", name:"risultato", component: RisultatoView},
-    {path: "/profilo", name:"profilo", component: () => import('@/views/ProfilePage.vue')},
-    {path: "/carica", name:"carica", component: CaricaFile},
-    {path: "/visualizza", name:"visualizza", component: VisualizzaView},
+    {path: "/login", name:"login", component: LoginView, meta: {title: "Login"}},
+    {path: "/chisiamo", name:"chisiamo", component: ChiSiamoView, meta: {title: "Chi Siamo"}},
+    {path: "/", redirect: "/home"},
+    {path: "/home", name:"home", component: HomeView,  meta: {title: "Home"}},
+    {path: "/registra", name:"registra", component: RegistraView, meta: {title: "Registrati"}},
+    {path: "/ris", name:"risultato", component: RisultatoView, meta: {title: "Risultato"}},
+    {path: "/profilo", name:"profilo", component: () => import('@/views/ProfilePage.vue'), meta: {title: "Profilo"}},
+    {path: "/carica", name:"carica", component: CaricaFile, meta: {title: "Carica"}},
+    {path: "/visualizza", name:"visualizza", component: VisualizzaView, meta: {title: "Visualizza"}},
     {path: "/:pathMatch(.*)*", redirect: "/home"},
 ];
 
 const router = createRouter({
     history: createWebHistory(),
     routes,
+});
+
+router.beforeEach((to, from, next) => {
+    const defaultTitle = 'Nome Sito';
+    document.title = to.meta.title || defaultTitle;
+    next();
 });
 
 export default router;

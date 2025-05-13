@@ -80,10 +80,10 @@ const onFilePicked = async (event: Event) => {
       const previewFileUrl = await fileStore.uploadFile(
           previewFile,
           `${title.value}/preview`,
-      "",
+          "",
           ["preview"],
           ""
-    );
+      );
 
       // 4. Carica entrambi i file sul database
       // Assumendo che fileStore.uploadFile sia stato modificato per accettare anche l'anteprima
@@ -93,7 +93,7 @@ const onFilePicked = async (event: Event) => {
           pdfFile,
           title.value,
           description.value,
-          tags.value,
+          Array.isArray(tags.value) ? tags.value.map(tag => tag.toLowerCase()) : tags.value.toLowerCase(),
           previewFileUrl.publicUrl // Aggiunto il file dell'anteprima
       );
 

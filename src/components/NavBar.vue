@@ -29,7 +29,7 @@ const fileStore = useFileStore();
             <div class="searchbar-left">
               <div class="search-icon-wrapper">
                 <span class="search-icon searchbar-icon">
-                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" @click="fileStore.searchFile(inputcondiviso.testo)" id="search">
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" @click="fileStore.searchFile(inputcondiviso.testo.toLowerCase())" id="search">
                     <path
                         d="M15.5 14h-.79l-.28-.27A6.471 6.471 0 0 0 16 9.5 6.5 6.5 0 1 0 9.5 16c1.61 0 3.09-.59 4.23-1.57l.27.28v.79l5 4.99L20.49 19l-4.99-5zm-6 0C7.01 14 5 11.99 5 9.5S7.01 5 9.5 5 14 7.01 14 9.5 11.99 14 9.5 14z"
                     ></path>
@@ -52,6 +52,7 @@ const fileStore = useFileStore();
                   title="Search"
                   role="combobox"
                   placeholder="Cerca appunti"
+                  @input="fileStore.searchFile(inputcondiviso.testo.toLowerCase())"
               />
             </div>
 
@@ -81,10 +82,10 @@ const fileStore = useFileStore();
           </div>
         </div>
       </li>
-      <li><RouterLink to="ChiSiamo">Chi Siamo</RouterLink></li>
-      <li><RouterLink to="ris">Cerca</RouterLink></li>
-      <li><RouterLink to="carica">Carica</RouterLink></li>
-      
+      <li><RouterLink to="ChiSiamo" class="a">Chi Siamo</RouterLink></li>
+      <li><RouterLink to="ris" class="a">Cerca</RouterLink></li>
+      <li><RouterLink to="carica" class="a">Carica</RouterLink></li>
+
       <li><input v-if="!(authStore.$state.user)" type="button" value="Accedi" class="button" @click="router.push('/login')" /></li>
       <li v-if="authStore.$state.user" class="profile-picture">
         <RouterLink to="/profilo">
@@ -98,7 +99,6 @@ const fileStore = useFileStore();
     </ul>
   </div>
 </template>
-
 <style scoped>
 
 .profile-picture {
@@ -142,7 +142,7 @@ const fileStore = useFileStore();
 .navbar__links {
   list-style: none;
   display: flex;
-  gap: 60px;
+  gap: 50px;
   align-items: center;
 }
 
@@ -151,17 +151,18 @@ const fileStore = useFileStore();
   color: #000000;
   font-weight: bold;
   font-size: 20px;
+  white-space: nowrap;
 }
 
 
-.navbar__links a:hover {
-  background-color: transparent;
-  color: #00bfff;
+.navbar__links .a:hover {
+  background-color: #000000;
+  color: #08a4ff;
   border-radius: 50px;
-  transition: all 0.8s ease;
+  transition: all 0.7s ease;
   padding: 5px 10px;
+  box-shadow: rgb(0 0 0 / 5%) 0 0 8px;
   letter-spacing: 1.5px;
-  text-decoration: underline;
 
 }
 
@@ -176,6 +177,9 @@ const fileStore = useFileStore();
   color: #000000;
   font-size: 24px;
   font-weight: bold;
+}
+.router-link:hover {
+  background-color: transparent;
 }
 
 /*----------------parra di ricerca------------------*/
@@ -399,6 +403,8 @@ const fileStore = useFileStore();
   cursor: pointer;
   border-radius: 9px 0 0 9px;
   background-color: var(--dropdown-button-color);
+  white-space: nowrap;
+
 }
 
 .dropdown-container::before {
@@ -561,6 +567,7 @@ const fileStore = useFileStore();
   top: calc(var(--height) + 5px);
   opacity: 1;
   visibility: visible;
+
 }
 
 .dropdown-checkbox:checked+.dropdown-container::after {
@@ -601,5 +608,10 @@ const fileStore = useFileStore();
 }
 .searchbar-icon:focus-visible {
   color: #fbbc05;
+}
+.language{
+  position: fixed;
+  top: 0.6%;
+  right: 8%;
 }
 </style>

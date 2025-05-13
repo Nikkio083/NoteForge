@@ -5,6 +5,7 @@ export const useAuthStore = defineStore('auth', {
     state: () => ({
         user: null as any,         // contiene l'oggetto user di Supabase
         isLoggedIn: false,
+        NumUsers: 0,             // contiene il numero totale di utenti registrati
     }),
 
     actions: {
@@ -46,6 +47,8 @@ export const useAuthStore = defineStore('auth', {
                 options: {
                     data: {
                         name: name,
+                        firstName: name.trim().split(' ')[0],
+                        lastname: name.trim().split(' ')[1],
                         school: school,
                         profilePic: profilePic
                     }
@@ -96,6 +99,27 @@ export const useAuthStore = defineStore('auth', {
                 console.error('Errore aggiornamento:', error.message);
             } else {
                 console.log('Utente aggiornato:', data.user);
+            }
+        },
+        async getRegisteredUsersCount() {
+            try {
+                // Chiamiamo la funzione RPC che restituisce solo il conteggio
+                const { data, error } = await supabase.rpc("get_users_count");
+
+                if (error) {
+                    console.error("Errore nel conteggio degli utenti:", error.message);
+                    return;
+                }
+
+                // Aggiorniamo la variabile di stato NumUsers
+                this.NumUsers = data || 0;
+                console.log("Numero totale di utenti registrati:", this.NumUsers);
+                return this.NumUsers;
+            } catch (error) {
+                console.error(
+                    "Errore imprevisto durante il conteggio degli utenti:",
+                    error
+                );
             }
         },
     },

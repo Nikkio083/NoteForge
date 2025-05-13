@@ -1,49 +1,15 @@
-<script lang="ts">
-import { ref } from "vue";
-import {useAuthStore} from "@/stores/authStore.ts";
-import router from "@/routers/index.ts";
-
-
-export default {
-  name: "LoginView",
-  setup() {
-    const password_visible = ref(false);
-    const email = ref("");
-    const password = ref("");
-    const authStore = useAuthStore();
-
-    const cambia_icone_password = () => {
-      password_visible.value = !password_visible.value;
-
-    };
-    const login = async (email:string, password:string) => {
-      authStore.login(email, password)
-      .then(() => {
-        alert("Login successful");
-        router.back();
-      })
-    }
-    return{
-      password_visible,
-      cambia_icone_password,
-      email,
-      password,
-      login,
-      authStore,
-    }
-  }
-}
-</script>
-
 <template>
   <div class="background">
-    <div class="darker">
-      <div class="container">
-        <div class="heading">Login</div>
-        <form action="" class="form">
-          <label>Email </label>
-          <input required v-model="email" type="text" class="input"  placeholder="E-mail" />
-          <label>Password </label>
+    <div class="container">
+      <div class="login-content">
+        <div class="welcome-text">
+          <h1>Login</h1>
+        </div>
+        <form class="form">
+          <label>Email</label>
+          <input required v-model="email" type="text" class="input" placeholder="E-mail" />
+
+          <label>Password</label>
           <div class="unione">
             <input v-model="password" :type="password_visible ? 'text' : 'password'" class="input" placeholder="Password" />
             <svg
@@ -70,65 +36,135 @@ export default {
               />
             </svg>
           </div>
-          <span class="forgot-password"><a href="#">Forgot Password ?</a></span>
+
+          <span class="forgot-password"><a href="#">Forgot Password?</a></span>
 
           <div class="modifica">
-            <input type="checkbox" id="remember"/>
+            <input type="checkbox" id="remember" v-model="rememberMe"/>
             <label id="solo"> Remember me</label>
           </div>
 
           <input class="login-button" type="button" value="Login" @click="login(email, password)"/>
         </form>
 
-        <p class="p">Non hai un account?<router-link to="/registra">Registrati</router-link></p>
+        <p class="p">Non hai un account? <router-link to="/registra">Registrati</router-link></p>
+      </div>
 
+      <!-- Right side with image -->
+      <div class="image-container">
+        <div class="image-background">
+          <img src="../assets/imgs/login.jpeg" alt="Email and clipboard illustration" class="decoration-image" />
+        </div>
       </div>
     </div>
-
   </div>
 </template>
 
+<script lang="ts">
+import { ref } from "vue";
+import { useAuthStore } from "@/stores/authStore.ts";
+import router from "@/routers/index.ts";
+
+export default {
+  name: "LoginView",
+  setup() {
+    const password_visible = ref(false);
+    const email = ref("");
+    const password = ref("");
+    const rememberMe = ref(false);
+    const authStore = useAuthStore();
+
+    const cambia_icone_password = () => {
+      password_visible.value = !password_visible.value;
+    };
+
+    const login = async (email: string, password: string) => {
+      authStore.login(email, password)
+          .then(() => {
+            alert("Login successful");
+            router.back();
+          })
+    }
+
+    return {
+      password_visible,
+      cambia_icone_password,
+      email,
+      password,
+      rememberMe,
+      login
+    }
+  }
+}
+</script>
 
 <style scoped>
-
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap');
 
-.background{
+/* Main container */
+.background {
   position: absolute;
   width: 100%;
-  height: 100%;
-  background-image: url("@/assets/imgs/login_background.jpg");
-  background-repeat: round;
-}
-
-.darker{
-  position: absolute;
-  width: 40%;
-  height: 100%;
-  left: 40%;
-  transform: translateX(-100%);
-  backdrop-filter: blur(8px) brightness(85%);
+  height: 100vh;
+  background-color: #f5f5f5;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
 }
 
 .container {
-  position: absolute;
-  width: 520px;
-  max-width: 520px;
-  background: linear-gradient(0deg, rgb(255, 255, 255) 0%, rgb(244, 247, 251) 100%);
-  border-radius: 40px;
-  padding: 30px 40px;
-  border: 5px solid rgb(255, 255, 255);
-  box-shadow: rgba(133, 189, 215, 0.88) 0px 30px 30px -20px;
-  font-family: 'DM Sans', sans-serif;
-  left: 55%;
-  top: 50%;
-  transform: translate(-50%, -50%);
+  display: flex;
+  width: 80%; /* Reduced from 90% */
+  height: 80vh; /* Reduced from 90vh */
+  max-width: 1200px; /* Reduced from 1400px */
+  background: #fff;
+  border-radius: 30px;
+  overflow: hidden;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  position: relative;
 }
 
+/* Left side - Login form */
+.login-content {
+  flex: 0.4; /* Takes 40% of the container width */
+  padding: 2rem 3rem;
+  display: flex;
+  flex-direction: column;
+  background: linear-gradient(0deg, rgb(255, 255, 255) 0%, rgb(244, 247, 251) 100%);
+  box-shadow: rgba(133, 189, 215, 0.88) 0px 30px 30px -20px;
+}
 
+/* Right side - Image section */
+.image-container {
+  flex: 0.6; /* Takes 60% of the container width */
+  position: relative;
+  overflow: hidden;
+  background-color: #dcedfc; /* Light blue background matching the image */
+}
 
-.heading {
+.image-background {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background-color: #dcedfc; /* Same light blue background */
+}
+
+.decoration-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center;
+}
+
+.welcome-text h1 {
+  margin-top: 10%;
   text-align: center;
   font-weight: 900;
   font-size: 32px;
@@ -136,11 +172,19 @@ export default {
   color: rgb(16, 137, 211);
 }
 
+.welcome-text p {
+  color: #666;
+  font-size: 1rem;
+  font-family: 'DM Sans', sans-serif;
+}
+
+/* Form styling */
 .form {
   width: 100%;
-  max-width: 400px;
+  max-width: 350px;
   margin: 0 auto;
   box-sizing: border-box;
+  font-family: 'DM Sans', sans-serif;
 }
 
 .form label {
@@ -164,7 +208,7 @@ export default {
 
 .form .input::placeholder {
   color: rgb(170, 170, 170);
-  font-size:small;
+  font-size: small;
 }
 
 .form .input:focus {
@@ -189,48 +233,39 @@ export default {
   fill: #aaa;
 }
 
-/* FIX: Dimensioni checkbox ingrandite */
 #remember {
   margin: 0;
   cursor: pointer;
   transform: scale(1.4);
-  accent-color: #1091d3;
-
+  accent-color: rgb(16, 137, 211);
 }
 
 .modifica {
   display: flex;
   align-items: center;
-  margin: 20px;
+  margin: 20px 0;
   gap: 10px;
 }
 
-#solo{
+#solo {
   font-size: 13px;
   color: #0099ff;
   margin: 0;
 }
 
-.form .checkbox-container label {
-  font-size: 13px;
-  font-weight: 400;
-  color: #555;
-  margin-left: 10px;
-}
-
-.form .forgot-password {
+.forgot-password {
   display: block;
   margin-top: 10px;
   margin-left: 10px;
 }
 
-.form .forgot-password a {
+.forgot-password a {
   font-size: 13px;
   color: #0099ff;
   text-decoration: none;
 }
 
-.form .login-button {
+.login-button {
   display: block;
   width: 100%;
   font-weight: bold;
@@ -242,14 +277,15 @@ export default {
   box-shadow: rgba(133, 189, 215, 0.88) 0px 20px 10px -15px;
   border: none;
   transition: all 0.2s ease-in-out;
+  cursor: pointer;
 }
 
-.form .login-button:hover {
+.login-button:hover {
   transform: scale(1.03);
   box-shadow: rgba(133, 189, 215, 0.88) 0px 23px 10px -20px;
 }
 
-.form .login-button:active {
+.login-button:active {
   transform: scale(0.95);
   box-shadow: rgba(133, 189, 215, 0.88) 0px 15px 10px -10px;
 }
@@ -259,6 +295,7 @@ export default {
   font-size: 13px;
   color: #555;
   margin-top: 20px;
+  font-family: 'DM Sans', sans-serif;
 }
 
 .p a {
@@ -268,62 +305,35 @@ export default {
   margin-left: 5px;
 }
 
-.social-account-container {
-  margin-top: 30px;
+/* Responsive design */
+@media (max-width: 992px) {
+  .container {
+    flex-direction: column;
+    height: auto;
+  }
+
+  .login-content,
+  .image-container {
+    flex: none;
+    width: 100%;
+  }
+
+  .login-content {
+    max-width: 100%;
+  }
+
+  .image-container {
+    height: 300px;
+  }
 }
 
-.social-account-container .title {
-  display: block;
-  text-align: center;
-  font-size: 12px;
-  color: rgb(141, 140, 140);
+@media (max-width: 576px) {
+  .login-content {
+    padding: 2rem 1.5rem;
+  }
+
+  .image-container {
+    height: 250px;
+  }
 }
-
-.social-account-container .social-accounts {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  margin-top: 10px;
-}
-
-.social-account-container .social-accounts .social-button {
-  background: linear-gradient(45deg, rgb(0, 0, 0) 0%, rgb(112, 112, 112) 100%);
-  border: 5px solid white;
-  padding: 5px;
-  border-radius: 50%;
-  width: 40px;
-  aspect-ratio: 1;
-  display: grid;
-  place-content: center;
-  box-shadow: rgba(133, 189, 215, 0.88) 0px 12px 10px -8px;
-  transition: all 0.2s ease-in-out;
-}
-
-.social-account-container .social-accounts .social-button .svg {
-  fill: white;
-  margin: auto;
-}
-
-.social-account-container .social-accounts .social-button:hover {
-  transform: scale(1.2);
-}
-
-.social-account-container .social-accounts .social-button:active {
-  transform: scale(0.9);
-}
-
-.agreement {
-  display: block;
-  text-align: center;
-  margin-top: 20px;
-}
-
-.agreement a {
-  text-decoration: none;
-  color: #0099ff;
-  font-size: 9px;
-}
-
-
 </style>

@@ -4,6 +4,7 @@ import { useFileStore } from "@/stores/fileStore.ts";
 import { useAuthStore } from "@/stores/authStore.ts";
 import { ref, onMounted } from "vue";
 import Footer from "@/components/footer.vue";
+import router from "@/routers/index.ts";
 
 const fileStore = useFileStore();
 const authStore = useAuthStore();
@@ -20,7 +21,7 @@ const userProfile = ref({
   posizione: user.user_metadata.posizione,
   professione: user.user_metadata.profession,
   dataNascita: user.user_metadata.dataDiNascita,
-  iscrittoDal: "Gennaio 2023",
+  iscrittoDal: user.created_at.toString().substring(0, 10),
   social: {
     linkedin: "https://linkedin.com/in/mariorossi",
     github: "https://github.com/mariorossi",
@@ -46,6 +47,10 @@ const saveProfile = async () => {
 
 const cancelEditing = () => {
   isEditing.value = false;
+};
+const logout = () => {
+  authStore.logout();
+  router.push("/");
 };
 
 // Gestione upload immagine profilo
@@ -124,6 +129,16 @@ onMounted(() => {
               <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
             </svg>
             Modifica profilo
+          </button>
+
+          <button @click="logout" class="logout-button">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                 stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+              <polyline points="16 17 21 12 16 7"></polyline>
+              <line x1="21" y1="12" x2="9" y2="12"></line>
+            </svg>
+            Logout
           </button>
         </div>
 
@@ -240,6 +255,26 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.logout-button {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #f0f0f0;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.logout-button {
+  margin-left: 10px;
+  background-color: #ffdddd;
+}
+
+.logout-button:hover {
+  background-color: #ffcccc;
+}
 .profile-container {
   display: flex;
   flex-direction: column;

@@ -30,7 +30,7 @@
               </div>
 
               <div class="note-info">
-                <h2 class="note-title">{{ c.description }}</h2>
+                <h2 class="note-title">{{ c.title }}</h2>
                 <div class="note-meta">
                   <div class="stats">
                     <span class="views">
@@ -55,20 +55,20 @@
           </div>
 
           <div class="action-bar">
-            <button class="action-button like-btn" :class="{ 'active': isLiked(index) }" @click.prevent="toggleLike(index)">
+            <button class="action-button like-btn" :class="{ active: isLiked(index) }" @click.prevent="toggleLike(c, index)">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon">
                 <path d="M7 10v12" />
                 <path d="M15 5.88 14 10h5.83a2 2 0 0 1 1.92 2.56l-2.33 8A2 2 0 0 1 17.5 22H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2h2.76a2 2 0 0 0 1.79-1.11L12 2h0a3.13 3.13 0 0 1 3 3.88Z" />
-              </svg>
-              <span></span>
+              </svg>              <span>{{ likeStatsList[index]?.likes || c.likes }}</span>
             </button>
-            <button class="action-button dislike-btn" :class="{ 'active': isDisliked(index) }" @click.prevent="toggleDislike(index)">
+
+            <button class="action-button dislike-btn" :class="{ active: isDisliked(index) }" @click.prevent="toggleDislike(c, index)">
               <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon">
                 <path d="M17 14V2" />
                 <path d="M9 18.12 10 14H4.17a2 2 0 0 1-1.92-2.56l2.33-8A2 2 0 0 1 6.5 2H20a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2h-2.76a2 2 0 0 0-1.79 1.11L12 22h0a3.13 3.13 0 0 1-3-3.88Z" />
-              </svg>
-              <span></span>
+              </svg>              <span>{{ likeStatsList[index]?.dislikes || c.dislikes }}</span>
             </button>
+
             <button @click="download(c.link, c.title, c)" class="action-button save-btn" >
               <svg  xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="icon">
               <path d="M12 17V3" />
@@ -107,12 +107,19 @@ let risultati = ref([]);
 const searchTerm = shareInput.testo;
 const likedItems = ref({});
 const dislikedItems = ref({});
+const likeStatsList = ref([]);
+const userVotes = ref([]);
+
 
 const setCurrentFile = (file) => {
   fileStore.setCurrentFile(file);
   fileStore.addView(file);
   router.push('/visualizza');
 };
+
+const isLiked = (i) => userVotes.value[i] === 'like';
+const isDisliked = (i) => userVotes.value[i] === 'dislike';
+
 
 const isImage = (url) => {
   if (!url) return false;
@@ -125,28 +132,22 @@ const fetchResults = async () => {
   await fileStore.searchFile(searchTerm);
 };
 
-const toggleLike = (index) => {
-  // Se si attiva il like, disattiva il dislike
-  if (!likedItems.value[index]) {
-    dislikedItems.value[index] = false;
-  }
-  likedItems.value[index] = !likedItems.value[index];
+const toggleLike = async (file, i) => {
+  const fileId = file.id;
+  await fileStore.likeFile(fileId);
+  likeStatsList.value[i] = await fileStore.getLikeStats(fileId);
+  file.likes = likeStatsList.value[i].likes;
+  file.dislikes = likeStatsList.value[i].dislikes;
+  userVotes.value[i] = 'like';
 };
 
-const toggleDislike = (index) => {
-  // Se si attiva il dislike, disattiva il like
-  if (!dislikedItems.value[index]) {
-    likedItems.value[index] = false;
-  }
-  dislikedItems.value[index] = !dislikedItems.value[index];
-};
-
-const isLiked = (index) => {
-  return likedItems.value[index] || false;
-};
-
-const isDisliked = (index) => {
-  return dislikedItems.value[index] || false;
+const toggleDislike = async (file, i) => {
+  const fileId = file.id;
+  await fileStore.dislikeFile(fileId);
+  likeStatsList.value[i] = await fileStore.getLikeStats(fileId);
+  file.dislikes = likeStatsList.value[i].dislikes;
+  file.likes = likeStatsList.value[i].likes;
+  userVotes.value[i] = 'dislike';
 };
 
 const download =  (url, name, file) => {
@@ -156,6 +157,13 @@ const download =  (url, name, file) => {
 }
 
 onMounted(fetchResults);
+onMounted(async () => {
+  for (let i = 0; i < fileStore.risultati.length; i++) {
+    likeStatsList.value[i] = await fileStore.getLikeStats(fileStore.risultati[i].id);
+    userVotes.value[i] = await fileStore.getUserVote(fileStore.risultati[i].id);
+  }
+});
+
 </script>
 
 <style scoped>

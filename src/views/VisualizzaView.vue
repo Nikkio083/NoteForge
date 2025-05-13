@@ -15,7 +15,7 @@
       <Suspense>
         <!-- Sidebar con informazioni -->
         <div class="sidebar-wrapper">
-          <FileSideBar :file="file" />
+          <FileSideBar :file="fileStore.currentFile" />
         </div>
       </Suspense>
     </div>
@@ -25,21 +25,23 @@
 <script setup>
 import FileSideBar from '@/components/FileSideBar.vue'
 import { useFileStore } from "@/stores/fileStore.js";
-import { onMounted, computed } from "vue";
+import {onMounted, computed, ref} from "vue";
 import PdfEmbed from 'vue-pdf-embed'
 import NavBar from "@/components/NavBar.vue";
 
 const fileStore = useFileStore();
-const file = computed(() => fileStore.currentFile);
-const Url = computed(() => file.value?.link || '');
+const file = fileStore.currentFile;
+console.log(file);
+const Url = computed(() => fileStore.currentFile?.link || '');
 
 onMounted(() => {
   if(localStorage.getItem('currentFile') !== null){
-    fileStore.setCurrentFile(JSON.parse(localStorage.getItem('currentFile')));
+    const loc = JSON.parse(localStorage.getItem('currentFile'));
+    fileStore.setCurrentFile(loc);
   } else {
     console.log('Nessun file caricato');
   }
-  console.log('File caricato:', file.value);
+  console.log('File caricato:', fileStore.currentFile);
 })
 </script>
 

@@ -16,7 +16,7 @@
 
       <!-- Menu azioni rapide -->
       <div class="action-buttons">
-        <button @click="fileStore.downloadfile(file.link, file.title)" class="action-btn download-btn" title="Scarica">
+        <button @click="download(file.link, file.title, file)" class="action-btn download-btn" title="Scarica">
           <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
         </button>
         <button @click="saveToClipBoard(file.link)" class="action-btn share-btn" title="Condividi">
@@ -217,6 +217,14 @@
 import { useFileStore } from "@/stores/fileStore";
 import { ref, computed } from "vue";
 import {useAuthStore} from "@/stores/authStore.js";
+const props = defineProps({
+  file: {
+    type: Object,
+    required: true,
+  },
+});
+
+console.log(props.file);
 
 const fileStore = useFileStore();
 const authStore = useAuthStore();
@@ -251,36 +259,14 @@ const tabs = [
 ];
 const saveToClipBoard = (link) => {
   navigator.clipboard.writeText(link)
-    .then(() => {})
-    .catch(err => {
-      console.error('Errore durante la copia:', err);
-    });
+      .then(() => {})
+      .catch(err => {
+        console.error('Errore durante la copia:', err);
+      });
 };
 // Dati di esempio per i file correlati
 
 
-
-const relatedresults = ref([
-  {
-    title: 'Appunti di Matematica',
-    author: 'Marco Rossi',
-    format: 'pdf',
-    created_at: new Date(2023, 9, 15)
-  },
-  {
-    title: 'Riassunto Storia',
-    author: 'Laura Bianchi',
-    format: 'doc',
-    created_at: new Date(2023, 10, 2)
-  }
-]);
-
-const props = defineProps({
-  file: {
-    type: Object,
-    required: true,
-  },
-});
 
 
 const relatedFiles = ref([]);
@@ -376,6 +362,8 @@ function toggleLike() {
   if (userLiked.value && userDisliked.value) {
     userDisliked.value = false;
   }
+  fileStore.likeFile(props.file.id);
+  fileStore.getLikes(fileStore.currentFile)
 
   // Qui andrebbe la logica per aggiornare i like nel database
 }
@@ -385,6 +373,9 @@ function toggleDislike() {
   if (userDisliked.value && userLiked.value) {
     userLiked.value = false;
   }
+  fileStore.dislikeFile(props.file.id);
+  fileStore.getDislikes(fileStore.currentFile)
+
 
   // Qui andrebbe la logica per aggiornare i dislike nel database
 }

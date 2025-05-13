@@ -16,4 +16,5 @@ const authStore = useAuthStore();
 await authStore.fetchSession();
 
 
+
 app.mount('#app')

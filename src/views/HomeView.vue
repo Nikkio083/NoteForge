@@ -1,10 +1,21 @@
+
 <script setup>
 import NavbarHome from "../components/NavBarHome.vue";
 import { useshareinput } from "@/stores/shareInput.js";
 import foo from "../components/footer.vue";
 import { RouterLink } from "vue-router";
-import router from "@/routers/index.js";
+import {useAuthStore} from "@/stores/authStore.ts";
+import { useFileStore } from '@/stores/fileStore.js'
+
+import { ref } from "vue";
 const inputcondiviso = useshareinput(); // accediamo allo store
+const authStore = useAuthStore();
+const fileStore = useFileStore();
+
+
+const NumRisorse = ref(0);
+const NumGruppi = ref(0);
+// const NumUtenti = authStore.NumUsers;
 
 
 </script>
@@ -27,7 +38,7 @@ const inputcondiviso = useshareinput(); // accediamo allo store
                 <svg
                     xmlns="http://www.w3.org/2000/svg"
                     viewBox="0 0 24 24"
-                    @click="router.push('/ris')"
+                    @click="inputcondiviso.testo.value = inputcondiviso.testo.value.toLowerCase()"
                     id="search"
                 >
                   <path
@@ -106,7 +117,7 @@ const inputcondiviso = useshareinput(); // accediamo allo store
             class="icon"
         /></span>
         </h3>
-        <h2>35M</h2>
+        <h2>{{ fileStore.NumFiles }}</h2>
       </div>
       <div class="num">
         <h3>
@@ -118,7 +129,7 @@ const inputcondiviso = useshareinput(); // accediamo allo store
               class="icon"
           /></span>
         </h3>
-        <h2>60M</h2>
+        <h2>{{ NumGruppi }}</h2>
       </div>
       <div class="num">
         <h3>
@@ -129,7 +140,7 @@ const inputcondiviso = useshareinput(); // accediamo allo store
             class="icon"
         /></span>
         </h3>
-        <h2>200M</h2>
+        <h2>{{ authStore.NumUsers }}</h2>
       </div>
     </div>
     <img src="../assets/imgs/libri.png" alt="libri" class="libri" />
@@ -448,7 +459,7 @@ const inputcondiviso = useshareinput(); // accediamo allo store
 .ilmeglio {
   position: absolute;
   top: 100%;
-  left: 20%;
+  left: 22%;
   transform: translate(-50%, -0%);
 }
 .like_dislike {
